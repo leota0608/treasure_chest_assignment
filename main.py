@@ -57,6 +57,9 @@ class Map:
             print("\n", end='')
         print("Y: playwe\nO: oak\nP: pine\nB: birch\nW: willow\n**Use wasd to move your charactor**")
     
+    def get_dimentions(self):
+        pass
+    
 
 oak = Tree("oak", "Nothing here...")
 pine = Tree("pine", "Nothing here...")
