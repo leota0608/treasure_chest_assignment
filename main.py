@@ -23,7 +23,7 @@ class Player:
         self.location = location
 
     def __str__(self):
-        return f"Player is at position [{self.x}, {self.y}]"\
+        return f"Player is at position [{self.x}, {self.y}]"
         
     def move(self, c):
         if c == 'w' and self.location[0] > 0:
@@ -51,11 +51,11 @@ class Map:
         for i in range(self.dimension[0]+1):
             for j in range(self.dimension[1]+1):
                 if i == player.location[0] and j == player.location[1]:
-                    print("Y", end=' ')
+                    print("#", end=' ')
                 else:
                     print(self.game_map[i][j], end=' ')
             print("\n", end='')
-        print("Y: playwe\nO: oak\nP: pine\nB: birch\nW: willow\n**Use wasd to move your charactor**")
+        print("#: player\nO: oak\nP: pine\nB: birch\nW: willow\n**Use wasd to move your charactor**")
     
     def get_dimentions(self):
         pass
