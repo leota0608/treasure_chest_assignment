@@ -2,6 +2,7 @@ import random
 import os
 import msvcrt
 import time
+from tabulate import tabulate
 class Tree:
     def __init__(self, name, description):
         #attributes
@@ -10,7 +11,7 @@ class Tree:
         self.chest = False
         
     def __str__(self):
-        return self.name.title()
+        return f"Tree name: {self.name.title()}\nDescription: {self.description}"
     
     def place_chest(self):
         self.chest = True
@@ -25,21 +26,25 @@ class Player:
     def __str__(self):
         return f"Player is at position [{self.x}, {self.y}]"
         
-    def move(self, c):
+    def move(self, c, game_map):
+        self.game_map.print_map(player)
         if c == 'w' and self.location[0] > 0:
             self.location[0] -= 1
-            self.game_map.print_map(player)
         elif c == 's' and self.location[0] < self.game_map.dimension[0]:
             self.location[0] += 1
-            self.game_map.print_map(player)
-        elif c == 'a' and self.location[1] >0:
+            #self.game_map.print_map(player)
+        elif c == 'a' and self.location[1] > 0:
             self.location[1] -= 1
             self.game_map.print_map(player)
         elif c == 'd' and self.location[1] < self.game_map.dimension[1]:
             self.location[1] += 1
             self.game_map.print_map(player)  
         else:
-            self.game_map.print_map(player)  
+            self.game_map.print_map(player) 
+        for tree in forest:
+            if game_map.game_map[self.location[0]][self.location[1]] == tree.name[0].title():
+                print(tree)
+            
             
 class Map:
     def __init__(self, _map):
@@ -68,7 +73,7 @@ birch = Tree("birch", "Nothing here...")
 willow = Tree("willow", "Nothing here...")
 
 forest = [oak, pine, maple, birch, willow]
-
+#tree_name = ["oak", "pine", "maple", "birch", "willow",]
 game_map = []
 available_spots = []
 for i in range(4):
@@ -84,12 +89,14 @@ for i in range(len(forest)):
     a = random.randint(0, len(available_spots)-1)
     game_map[available_spots[a][0]][available_spots[a][1]] = forest[i].name[0].upper()
     available_spots.pop(a)
-    
+print(tabulate(game_map, tablefmt = "grid"))
+'''
 game_map = Map(game_map)
 player = Player("111", game_map, [0, 0])
 game_map.print_map(player)
 while True:
     c = msvcrt.getch().decode('utf-8').lower()
-    player.move(c)
+    player.move(c, game_map)
 
 # python main.py
+'''
