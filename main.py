@@ -11,7 +11,10 @@ class Tree:
         self.chest = False
         
     def __str__(self):
-        return f"Tree name: {self.name.title()}\nDescription: {self.description}"
+        return self.name.upper()
+    
+    def get_description(self):
+        return self.description
     
     def place_chest(self):
         self.chest = True
@@ -27,12 +30,12 @@ class Player:
         return f"Player is at position [{self.x}, {self.y}]"
         
     def move(self, c, game_map):
-        self.game_map.print_map(player)
         if c == 'w' and self.location[0] > 0:
             self.location[0] -= 1
+            self.game_map.print_map(player)
         elif c == 's' and self.location[0] < self.game_map.dimension[0]:
             self.location[0] += 1
-            #self.game_map.print_map(player)
+            self.game_map.print_map(player)
         elif c == 'a' and self.location[1] > 0:
             self.location[1] -= 1
             self.game_map.print_map(player)
@@ -47,20 +50,48 @@ class Player:
             
             
 class Map:
-    def __init__(self, _map):
-        self.game_map = _map
-        self.dimension = [len(_map)-1, len(_map[0])-1]#(0 ~ n-1)
-        
+    def __init__(self):
+        self.initialize()
+        self.dimension = [len(self.game_map[0])-1, len(self.game_map[0])-1]#(0 ~ n-1)
+    
+    def initialize(self):
+        self.game_map = []
+        available_spots = []
+        for i in range(4):
+            row = []
+            for j in range(4):
+                row.append("Tree")
+                available_spots.append([i, j])
+            self.game_map.append(row)
+        available_spots.pop(0)
+        available_spots.pop(-1)
+
+        for i in range(len(forest)):
+            a = random.randint(0, len(available_spots)-1)
+            self.game_map[available_spots[a][0]][available_spots[a][1]] = forest[i]
+            forest[i].location = [available_spots[a][0], available_spots[a][1]]
+            available_spots.pop(a)
+
+    def update(self):
+        for i in range(len(self.game_map)):
+            for j in range(len(self.game_map[i])):
+                self.game_map[i][j] = "Tree"
+                for tree in forest:
+                    if [i, j] == tree.location:
+                        self.game_map[i][j] = tree
+
+                
+
     def print_map(self, player):
-        os.system('cls')
-        for i in range(self.dimension[0]+1):
-            for j in range(self.dimension[1]+1):
-                if i == player.location[0] and j == player.location[1]:
-                    print("#", end=' ')
-                else:
-                    print(self.game_map[i][j], end=' ')
-            print("\n", end='')
-        print("#: player\nO: oak\nP: pine\nB: birch\nW: willow\n**Use wasd to move your charactor**")
+        self.update()
+        self.game_map[player.location[0]][player.location[1]] = '#'
+        
+        print(tabulate(self.game_map, tablefmt = "grid"))
+        print("#: player\n**Use wasd to move your charactor**")
+        
+        for tree in forest:
+            if [player.location[0], player.location[1]] == tree.location:
+                print(f"Description: This is a {tree}. {tree.get_description()}")
     
     def get_dimentions(self):
         pass
@@ -73,30 +104,14 @@ birch = Tree("birch", "Nothing here...")
 willow = Tree("willow", "Nothing here...")
 
 forest = [oak, pine, maple, birch, willow]
-#tree_name = ["oak", "pine", "maple", "birch", "willow",]
-game_map = []
-available_spots = []
-for i in range(4):
-    row = []
-    for j in range(4):
-        row.append(0)
-        available_spots.append([i, j])
-    game_map.append(row)
-available_spots.pop(0)
-available_spots.pop(-1)
 
-for i in range(len(forest)):
-    a = random.randint(0, len(available_spots)-1)
-    game_map[available_spots[a][0]][available_spots[a][1]] = forest[i].name[0].upper()
-    available_spots.pop(a)
-print(tabulate(game_map, tablefmt = "grid"))
-'''
-game_map = Map(game_map)
+game_map = Map()
+
 player = Player("111", game_map, [0, 0])
 game_map.print_map(player)
+
 while True:
-    c = msvcrt.getch().decode('utf-8').lower()
+    c = input()
     player.move(c, game_map)
 
 # python main.py
-'''
