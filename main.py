@@ -112,6 +112,6 @@ game_map.print_map(player)
 
 while True:
     c = input()
-    player.move(c, game_map)
+    player.move(c, game_map)1
 
 # python main.py
