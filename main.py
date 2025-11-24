@@ -29,7 +29,7 @@ class Player:
     def __str__(self):
         return f"Player is at position [{self.x}, {self.y}]"
         
-    def move(self, c, game_map):
+    def move(self, c):
         if c == 'w' and self.location[0] > 0:
             self.location[0] -= 1
             self.game_map.print_map(player)
@@ -48,7 +48,15 @@ class Player:
             if game_map.game_map[self.location[0]][self.location[1]] == tree.name[0].title():
                 print(tree)
             
-            
+
+class Monkey(Player):
+    def __init__(self, name, game_map, location):
+        Player.__init__(self, name, game_map, location)
+
+    def __str__(self):
+        return f"Monkey {self.name} is at position ({self.location[0], self.location[1]})"
+    
+
 class Map:
     def __init__(self):
         self.initialize()
@@ -78,7 +86,7 @@ class Map:
                 self.game_map[i][j] = "Tree"
                 for tree in forest:
                     if [i, j] == tree.location:
-                        self.game_map[i][j] = tree
+                        self.game_map[i][j] = str(tree)
 
                 
 
@@ -86,6 +94,7 @@ class Map:
         self.update()
         self.game_map[player.location[0]][player.location[1]] = '#'
         
+        self.game_map[monkey.location[0]][monkey.location[1]] += "\n(monkey)"
         print(tabulate(self.game_map, tablefmt = "grid"))
         print("#: player\n**Use wasd to move your charactor**")
         
@@ -104,14 +113,29 @@ birch = Tree("birch", "Nothing here...")
 willow = Tree("willow", "Nothing here...")
 
 forest = [oak, pine, maple, birch, willow]
-
 game_map = Map()
+
+monkey = Monkey("monkey", game_map, [3, 3])
+
 
 player = Player("111", game_map, [0, 0])
 game_map.print_map(player)
 
 while True:
     c = input()
-    player.move(c, game_map)1
-
+    player.move(c)
+    direction_x = 0 if player.location[0] == monkey.location[0] else (player.location[0] - monkey.location[0]) / abs(player.location[0] - monkey.location[0])
+    direction_y = 0 if player.location[1] == monkey.location[1] else(player.location[1] - monkey.location[1]) / abs(player.location[1] - monkey.location[1])
+    #print(f"{direction_x}, {direction_y}")
+    step = 1
+    if direction_x == 1:
+        monkey.move('s')
+        step -= 1
+    elif direction_x == -1:
+        monkey.move('w')
+        step -= 1
+    if direction_y == 1 and step == 1:
+        monkey.move('d')
+    elif direction_y == -1 and step == 1:
+        monkey.move('a')
 # python main.py
