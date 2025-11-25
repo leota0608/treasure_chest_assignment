@@ -38,7 +38,6 @@ class Player:
                     return
             print("Nothing here!")
             return
-
         if c == 'w' and self.location[0] > 0:
             self.location[0] -= 1
             self.game_map.print_map(player)
@@ -67,7 +66,6 @@ class Monkey(Player):
     
     def speak(self, forest):
         index = random.randint(0, len(forest)-1)
-        
         print(f"The treasure is burried under one of the tree.\nIt starts with an {forest[index].name[0]} and ends with an {forest[index].name[-1]}")
         forest[index].place_chest()
     
@@ -104,8 +102,6 @@ class Map:
                     if [i, j] == tree.location:
                         self.game_map[i][j] = str(tree)
 
-                
-
     def print_map(self, player):
         self.update()
         self.game_map[player.location[0]][player.location[1]] = '#'
@@ -118,9 +114,6 @@ class Map:
         for tree in forest:
             if [player.location[0], player.location[1]] == tree.location:
                 print(f"Description: This is a {tree}. {tree.get_description()}")
-    
-    def get_dimentions(self):
-        pass
     
 
 oak = Tree("oak", "Nothing here...")
