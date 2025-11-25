@@ -17,3 +17,11 @@ This code does the following:
     3. Pine
     4. Birch
     5. Willow
+
+Example map:  
+|       |           | | |
+|------|---------------|------|--------|
+| Tree | BIRCH         | Tree | WILLOW |
+| Tree | Tree (monkey) | Tree | PINE   |
+| Tree | #             | Tree | MAPLE  |
+| Tree | OAK           | Tree | Tree   |
