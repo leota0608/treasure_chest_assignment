@@ -9,6 +9,7 @@ class Tree:
         self.name = name
         self.description = description
         self.chest = False
+        self.pos = []
         
     def __str__(self):
         return self.name.upper()
@@ -30,6 +31,14 @@ class Player:
         return f"Player is at position [{self.x}, {self.y}]"
         
     def move(self, c):
+        if c == 't':
+            for tree in forest:
+                if self.location == tree.pos and tree.chest:
+                    print("You found the treasure!")
+                    return
+            print("Nothing here!")
+            return
+
         if c == 'w' and self.location[0] > 0:
             self.location[0] -= 1
             self.game_map.print_map(player)
@@ -56,6 +65,12 @@ class Monkey(Player):
     def __str__(self):
         return f"Monkey {self.name} is at position ({self.location[0], self.location[1]})"
     
+    def speak(self, forest):
+        index = random.randint(0, len(forest)-1)
+        
+        print(f"The treasure is burried under one of the tree.\nIt starts with an {forest[index].name[0]} and ends with an {forest[index].name[-1]}")
+        forest[index].place_chest()
+    
 
 class Map:
     def __init__(self):
@@ -77,6 +92,7 @@ class Map:
         for i in range(len(forest)):
             a = random.randint(0, len(available_spots)-1)
             self.game_map[available_spots[a][0]][available_spots[a][1]] = forest[i]
+            forest[i].pos = [available_spots[a][0], available_spots[a][1]]
             forest[i].location = [available_spots[a][0], available_spots[a][1]]
             available_spots.pop(a)
 
@@ -97,6 +113,7 @@ class Map:
         self.game_map[monkey.location[0]][monkey.location[1]] += "\n(monkey)"
         print(tabulate(self.game_map, tablefmt = "grid"))
         print("#: player\n**Use wasd to move your charactor**")
+        print("**Press [t] to dig and find treasure**")
         
         for tree in forest:
             if [player.location[0], player.location[1]] == tree.location:
@@ -121,12 +138,14 @@ monkey = Monkey("monkey", game_map, [3, 3])
 player = Player("111", game_map, [0, 0])
 game_map.print_map(player)
 
+place_chest = False
 while True:
     c = input()
     player.move(c)
     direction_x = 0 if player.location[0] == monkey.location[0] else (player.location[0] - monkey.location[0]) / abs(player.location[0] - monkey.location[0])
     direction_y = 0 if player.location[1] == monkey.location[1] else(player.location[1] - monkey.location[1]) / abs(player.location[1] - monkey.location[1])
     #print(f"{direction_x}, {direction_y}")
+    
     step = 1
     if direction_x == 1:
         monkey.move('s')
@@ -138,4 +157,8 @@ while True:
         monkey.move('d')
     elif direction_y == -1 and step == 1:
         monkey.move('a')
+    if not place_chest and monkey.location == player.location:
+        monkey.speak(forest)
+        place_chest = True
+        
 # python main.py
